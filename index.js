@@ -1,6 +1,9 @@
 import inquirer from "inquirer";
 import storePrompt from "./prompts/store.js";
 import peekPrompt from "./prompts/peek.js";
+import siginthandler from "./utils/siginthandler.js";
+
+siginthandler();
 
 inquirer
   .prompt([

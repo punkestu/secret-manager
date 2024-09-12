@@ -1,6 +1,7 @@
 import inquirer from "inquirer";
 import storePrompt from "./prompts/store.js";
 import peekPrompt from "./prompts/peek.js";
+import listPrompt from "./prompts/list.js";
 import siginthandler from "./utils/siginthandler.js";
 
 siginthandler();
@@ -11,7 +12,7 @@ inquirer
       type: "list",
       name: "menu",
       message: "Select an action",
-      choices: ["Store", "Peek"],
+      choices: ["Store", "Peek", "List"],
       validate: function (value) {
         if (value.length) {
           return true;
@@ -27,6 +28,8 @@ inquirer
         await storePrompt();
       } else if (answers.menu === "Peek") {
         await peekPrompt();
+      } else if (answers.menu === "List") {
+        await listPrompt();
       }
     },
     (error) => {

@@ -5,7 +5,7 @@ export default function prompt() {
   inquirer
     .prompt([
       {
-        type: "list",
+        type: "search-list",
         name: "store",
         message: "Enter your Store Strategy: ",
         choices: ["sqlite"],
@@ -18,7 +18,7 @@ export default function prompt() {
         },
       },
       {
-        type: "list",
+        type: "search-list",
         name: "input",
         message: "Enter your Input Strategy: ",
         choices: ["key"],

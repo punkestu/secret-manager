@@ -1,41 +1,38 @@
 import inquirer from "inquirer";
-import { routeFetch } from "../strategies/router.js";
+import { routePeek } from "../strategies/router.js";
 
-export default function prompt() {
-  inquirer
-    .prompt([
-      {
-        type: "list",
-        name: "store",
-        message: "Enter your Store Strategy: ",
-        choices: ["sqlite"],
-        validate: function (value) {
-          if (value.length) {
-            return true;
-          } else {
-            return "Please enter your store strategy";
-          }
-        },
+export default async function () {
+  const { store } = await inquirer.prompt([
+    {
+      type: "search-list",
+      name: "store",
+      message: "Enter your Store Strategy: ",
+      choices: ["sqlite"],
+      validate: function (value) {
+        if (value.length) {
+          return true;
+        } else {
+          return "Please enter your store strategy";
+        }
       },
-      {
-        type: "input",
-        name: "key",
-        message: "Enter your Key: ",
-        validate: function (value) {
-          if (value.length) {
-            return true;
-          } else {
-            return "Please enter your key";
-          }
-        },
+    },
+  ]);
+  var data = await routePeek({ store: store });
+  const { key } = await inquirer.prompt([
+    {
+      type: "search-list",
+      name: "key",
+      message: "Select the key",
+      choices: [...data.map((datum) => datum.key)],
+      validate: function (value) {
+        if (value.length) {
+          return true;
+        } else {
+          return "Please select the key";
+        }
       },
-    ])
-    .then(
-      async (answers) => {
-        await routeFetch(answers);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    },
+  ]);
+  const found = data.find((datum) => datum.key === key);
+  console.log(found);
 }

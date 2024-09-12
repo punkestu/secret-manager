@@ -1,3 +1,7 @@
 export default function (data, params = {}) {
-  return ["key"].includes(params.type) ? data : JSON.parse(data);
+  try {
+    return ["key"].includes(params.type) ? data : JSON.parse(data);
+  } catch (_) {
+    return data;
+  }
 }

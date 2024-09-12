@@ -1,8 +1,9 @@
-import sqliteStoreStrategy from "./store/sqliteStrategy.js";
 import keyInputStrategy from "./input/keyStrategy.js";
-import sqliteFetchStrategy from "./fetch/sqliteStrategy.js";
+import sqliteStoreStrategy from "./store/sqliteStrategy.js";
+import sqlitePeekStrategy from "./peek/sqliteStrategy.js";
 
 import dataProcesses from "./dataProcesses.js";
+import deserialize from "../utils/deserialize.js";
 
 const storeStrategies = {
   sqlite: sqliteStoreStrategy,
@@ -10,8 +11,8 @@ const storeStrategies = {
 const inputStrategies = {
   key: keyInputStrategy,
 };
-const fetchStrategies = {
-  sqlite: sqliteFetchStrategy,
+const peekStrategies = {
+  sqlite: sqlitePeekStrategy,
 };
 
 export async function routeInput({ input, store }) {
@@ -28,11 +29,15 @@ export async function routeInput({ input, store }) {
   await inputStrategy(storeStrategy, dataProcesses);
 }
 
-export async function routeFetch({ store, key }) {
-  const fetchStrategy = fetchStrategies[store];
-  if (!fetchStrategy) {
+export async function routePeek({ store }) {
+  const peekStrategy = peekStrategies[store];
+  if (!peekStrategy) {
     throw new Error("Invalid store strategy");
   }
 
-  await fetchStrategy(key, dataProcesses);
+  return (await peekStrategy()).map((datum) => ({
+    key: datum.key,
+    type: datum.type,
+    value: deserialize(dataProcesses(datum.value, true), datum),
+  }));
 }

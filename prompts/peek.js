@@ -1,6 +1,8 @@
 import inquirer from "inquirer";
 import { routePeek } from "../strategies/router.js";
 
+import clipboard from "clipboardy";
+
 export default async function () {
   const { store } = await inquirer.prompt([
     {
@@ -34,5 +36,7 @@ export default async function () {
     },
   ]);
   const found = data.find((datum) => datum.key === key);
-  console.log(found);
+  console.log(found.value);
+  clipboard.writeSync(found.value);
+  console.log("copied to clipboard");
 }
